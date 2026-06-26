@@ -1,0 +1,444 @@
+/* ==========================================================================
+   FTP Log Explorer – Custom Stylesheet
+   Design: Dark terminal aesthetic with steel-blue accents.
+   Typefaces: Inter (UI), JetBrains Mono (filenames / data)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  --color-bg:          #0d1117;
+  --color-surface:     #161b22;
+  --color-surface-2:   #1c2128;
+  --color-border:      #30363d;
+  --color-accent:      #388bfd;
+  --color-accent-glow: rgba(56, 139, 253, 0.15);
+  --color-text:        #e6edf3;
+  --color-muted:       #8b949e;
+  --font-ui:           'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:         'JetBrains Mono', 'Cascadia Code', monospace;
+  --radius:            8px;
+  --radius-sm:         5px;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.fw-700 { font-weight: 700; }
+
+/* --------------------------------------------------------------------------
+   Login page
+   -------------------------------------------------------------------------- */
+.login-bg {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(56,139,253,0.08) 0%, transparent 60%);
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--color-border) !important;
+  overflow: hidden;
+}
+
+.card-accent-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent) 0%, #58a6ff 100%);
+}
+
+.brand-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--color-accent-glow);
+  border: 1px solid var(--color-accent);
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: var(--color-accent);
+}
+
+.brand-icon-sm {
+  width: 30px;
+  height: 30px;
+  background: var(--color-accent-glow);
+  border: 1px solid var(--color-accent);
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: var(--color-accent);
+}
+
+/* Override Bootstrap dark form controls */
+.form-control.bg-dark {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text);
+}
+
+.form-control.bg-dark::placeholder {
+  color: var(--color-muted);
+}
+
+.form-control.bg-dark:focus {
+  background-color: var(--color-bg) !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+  color: var(--color-text);
+}
+
+.input-group-text.bg-dark {
+  background-color: var(--color-bg) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Navbar / surface
+   -------------------------------------------------------------------------- */
+.bg-surface {
+  background-color: var(--color-surface) !important;
+}
+
+.border-subtle {
+  border-color: var(--color-border) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Stat cards
+   -------------------------------------------------------------------------- */
+.stat-card {
+  background-color: var(--color-surface-2) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius);
+  transition: border-color 0.15s;
+}
+
+.stat-card:hover {
+  border-color: var(--color-accent) !important;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.stat-value-sm {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Controls bar
+   -------------------------------------------------------------------------- */
+.card.bg-surface {
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius);
+}
+
+.form-select.bg-dark {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text);
+}
+
+.form-select.bg-dark:focus {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+/* --------------------------------------------------------------------------
+   File table
+   -------------------------------------------------------------------------- */
+#filesTable {
+  font-size: 0.85rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#filesTable thead th {
+  background-color: var(--color-surface-2);
+  color: var(--color-muted);
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border) !important;
+  border-top: none !important;
+  padding: 0.85rem 1rem;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+#filesTable tbody tr {
+  transition: background-color 0.1s;
+}
+
+#filesTable tbody tr:hover td {
+  background-color: var(--color-surface-2) !important;
+}
+
+#filesTable td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--color-border) !important;
+  border-top: none !important;
+  vertical-align: middle;
+  background-color: transparent;
+}
+
+.filename-cell {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-text);
+  word-break: break-all;
+}
+
+.ext-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2em 0.55em;
+  border-radius: 4px;
+}
+
+.ext-log {
+  background-color: rgba(31, 111, 235, 0.15);
+  color: #58a6ff;
+  border: 1px solid rgba(56,139,253,0.3);
+}
+
+.ext-gz {
+  background-color: rgba(210, 153, 34, 0.15);
+  color: #d29922;
+  border: 1px solid rgba(210,153,34,0.3);
+}
+
+.size-cell {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.date-cell {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.action-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.host-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.2em 0.55em;
+  border-radius: 4px;
+  background-color: rgba(56, 139, 253, 0.12);
+  color: #79c0ff;
+  border: 1px solid rgba(56, 139, 253, 0.25);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   DataTables overrides
+   -------------------------------------------------------------------------- */
+div.dataTables_wrapper {
+  color: var(--color-text);
+  padding: 0 1rem 1rem;
+}
+
+div.dataTables_filter {
+  margin-bottom: 0.75rem;
+  text-align: right;
+}
+
+div.dataTables_filter input {
+  background-color: var(--color-bg) !important;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.6rem;
+  margin-left: 0.5rem;
+  font-size: 0.82rem;
+}
+
+div.dataTables_filter input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+  outline: none;
+}
+
+div.dataTables_length select {
+  background-color: var(--color-bg) !important;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.35rem;
+  font-size: 0.82rem;
+}
+
+div.dataTables_length label,
+div.dataTables_filter label,
+div.dataTables_info {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+
+div.dataTables_paginate .paginate_button {
+  color: var(--color-muted) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 0.3rem 0.65rem !important;
+  margin: 0 2px !important;
+  font-size: 0.8rem;
+  border: 1px solid transparent !important;
+}
+
+div.dataTables_paginate .paginate_button:hover {
+  background: var(--color-surface-2) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+div.dataTables_paginate .paginate_button.current {
+  background: var(--color-accent-glow) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+  font-weight: 600;
+}
+
+div.dataTables_paginate .paginate_button.disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+table.dataTable thead .sorting::after,
+table.dataTable thead .sorting_asc::after,
+table.dataTable thead .sorting_desc::after {
+  opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   Viewer page
+   -------------------------------------------------------------------------- */
+.viewer-loading-bar {
+  height: 3px;
+  background-color: var(--color-border);
+  overflow: hidden;
+}
+
+.viewer-loading-bar-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-accent), #58a6ff);
+  transition: width 0.3s ease;
+  animation: loadingPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%   { width: 0%; margin-left: 0; }
+  50%  { width: 40%; margin-left: 30%; }
+  100% { width: 0%; margin-left: 100%; }
+}
+
+.viewer-loading-bar.done .viewer-loading-bar-inner {
+  animation: none;
+  width: 100%;
+}
+
+.viewer-loading-bar.hidden {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Bootstrap alert overrides
+   -------------------------------------------------------------------------- */
+.alert-danger {
+  background-color: rgba(248, 81, 73, 0.1);
+  border-color: rgba(248, 81, 73, 0.3);
+  color: #ffa198;
+}
+
+.alert-success {
+  background-color: rgba(56, 211, 159, 0.1);
+  border-color: rgba(56, 211, 159, 0.3);
+  color: #56d364;
+}
+
+.alert-info {
+  background-color: rgba(56, 139, 253, 0.1);
+  border-color: rgba(56, 139, 253, 0.3);
+  color: #79c0ff;
+}
+
+/* --------------------------------------------------------------------------
+   Scrollbar
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}

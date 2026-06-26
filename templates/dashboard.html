@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard – FTP Log Explorer{% endblock %}
+
+{% block body %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-surface border-bottom border-subtle px-4 py-2">
+  <div class="d-flex align-items-center gap-3">
+    <div class="brand-icon-sm"><i class="bi bi-hdd-network"></i></div>
+    <span class="fw-600 text-white navbar-brand mb-0 fs-6">FTP Log Explorer</span>
+    <!-- Host pills -->
+    <div class="d-flex flex-wrap gap-1 ms-1">
+      {% for label in host_labels %}
+      <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">
+        <i class="bi bi-circle-fill me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+        {{ label }}
+      </span>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2 ms-auto">
+    <span class="text-muted small me-1">
+      <i class="bi bi-person me-1"></i>{{ username }}
+    </span>
+    <button class="btn btn-sm btn-outline-primary" id="refreshBtn">
+      <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+    </button>
+    <a href="{{ url_for('main.logout') }}" class="btn btn-sm btn-outline-danger">
+      <i class="bi bi-box-arrow-right me-1"></i>Logout
+    </a>
+  </div>
+</nav>
+
+<main class="container-fluid px-4 py-4">
+
+  <!-- Login warnings (partial connection failures) -->
+  {% if login_warnings %}
+  <div class="alert alert-warning d-flex gap-2 py-2 px-3 mb-3 align-items-start" role="alert">
+    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1"></i>
+    <div>
+      <strong>Some hosts could not be reached at login:</strong>
+      <ul class="mb-0 mt-1 ps-3">
+        {% for w in login_warnings %}<li class="small">{{ w }}</li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Runtime alert container -->
+  <div id="alertContainer"></div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0">
+        <div class="card-body py-3">
+          <div class="stat-label">Total Files</div>
+          <div class="stat-value" id="statTotal">–</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0">
+        <div class="card-body py-3">
+          <div class="stat-label">.log Files</div>
+          <div class="stat-value text-info" id="statLog">–</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0">
+        <div class="card-body py-3">
+          <div class="stat-label">.gz Files</div>
+          <div class="stat-value text-warning" id="statGz">–</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0">
+        <div class="card-body py-3">
+          <div class="stat-label">Last Loaded</div>
+          <div class="stat-value-sm text-muted" id="statLoaded">–</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card border-0 bg-surface mb-3">
+    <div class="card-body py-3 px-4 d-flex flex-wrap align-items-center gap-3">
+
+      <!-- Host filter -->
+      <div class="d-flex align-items-center gap-2" id="hostFilterWrapper">
+        <span class="text-muted small fw-500">Host:</span>
+        <div class="btn-group btn-group-sm" role="group" id="hostFilter">
+          <input type="radio" class="btn-check" name="hostFilter" id="hostAll" value="all" checked />
+          <label class="btn btn-outline-secondary" for="hostAll">All</label>
+          {% for label in host_labels %}
+          <input type="radio" class="btn-check" name="hostFilter"
+                 id="host_{{ loop.index }}" value="{{ label }}" />
+          <label class="btn btn-outline-primary" for="host_{{ loop.index }}">{{ label }}</label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Extension filter -->
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-muted small fw-500">Type:</span>
+        <div class="btn-group btn-group-sm" role="group" id="extFilter">
+          <input type="radio" class="btn-check" name="extFilter" id="filterAll" value="all" checked />
+          <label class="btn btn-outline-secondary" for="filterAll">All</label>
+          <input type="radio" class="btn-check" name="extFilter" id="filterLog" value=".log" />
+          <label class="btn btn-outline-info" for="filterLog">.log</label>
+          <input type="radio" class="btn-check" name="extFilter" id="filterGz" value=".gz" />
+          <label class="btn btn-outline-warning" for="filterGz">.gz</label>
+        </div>
+      </div>
+
+      <!-- Sort -->
+      <div class="d-flex align-items-center gap-2 ms-md-auto">
+        <span class="text-muted small fw-500">Sort:</span>
+        <select class="form-select form-select-sm bg-dark border-secondary text-white"
+                id="sortSelect" style="width:auto;">
+          <option value="name_asc">Name A → Z</option>
+          <option value="name_desc">Name Z → A</option>
+          <option value="date_desc" selected>Newest First</option>
+          <option value="date_asc">Oldest First</option>
+          <option value="size_desc">Largest First</option>
+          <option value="size_asc">Smallest First</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- File table -->
+  <div class="card border-0 bg-surface">
+    <div class="card-body p-0">
+      <div id="tableLoading" class="text-center py-5">
+        <div class="spinner-border text-primary mb-3" style="width:2.5rem;height:2.5rem;" role="status">
+          <span class="visually-hidden">Loading…</span>
+        </div>
+        <p class="text-muted mb-0">Loading directory listings from all hosts…</p>
+      </div>
+      <div id="tableWrapper" class="d-none">
+        <table id="filesTable" class="table table-dark table-hover mb-0 w-100">
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th class="text-center" style="width:80px;">Ext</th>
+              <th style="width:120px;">Size</th>
+              <th style="width:180px;">Modified</th>
+              <th style="width:160px;">Host</th>
+              <th class="text-center" style="width:160px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="filesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

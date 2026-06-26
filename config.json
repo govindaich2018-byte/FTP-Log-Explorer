@@ -1,0 +1,6 @@
+{
+    "port": 22,
+    "directory": "/logs",
+    "timeout": 30,
+    "max_preview_mb": 20
+}

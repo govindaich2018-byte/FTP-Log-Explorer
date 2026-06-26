@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ filename }} – Log Viewer{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+{% endblock %}
+
+{% block body %}
+
+<nav class="navbar navbar-dark bg-surface border-bottom border-subtle px-4 py-2">
+  <div class="d-flex align-items-center gap-3 overflow-hidden">
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-sm btn-outline-secondary flex-shrink-0">
+      <i class="bi bi-arrow-left me-1"></i>Dashboard
+    </a>
+    <div class="d-flex flex-column overflow-hidden">
+      <span class="fw-600 text-white text-truncate"
+            style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;">
+        {{ filename }}
+      </span>
+      <span class="text-muted" style="font-size:0.72rem;">
+        {{ size_str }} &nbsp;·&nbsp; {{ modified_str }} &nbsp;·&nbsp;
+        <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle"
+              style="font-size:0.68rem;">{{ host_label }}</span>
+        {% if max_preview_mb %}&nbsp;·&nbsp; Preview cap: {{ max_preview_mb }} MB{% endif %}
+      </span>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0">
+    <button class="btn btn-sm btn-outline-secondary" id="wrapBtn">
+      <i class="bi bi-text-wrap me-1"></i>Wrap
+    </button>
+    <a href="{{ url_for('main.download_file', filename=filename, host=host_key_param) }}"
+       class="btn btn-sm btn-outline-success">
+      <i class="bi bi-download me-1"></i>Download
+    </a>
+  </div>
+</nav>
+
+<div id="loadingBar" class="viewer-loading-bar">
+  <div class="viewer-loading-bar-inner"></div>
+</div>
+
+<div id="viewerAlert" class="d-none px-4 pt-3">
+  <div class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+    <span id="viewerAlertMsg"></span>
+  </div>
+</div>
+
+<div id="editorContainer" style="width:100%;height:calc(100vh - 57px);"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const FILENAME    = {{ filename | tojson }};
+  const HOST_KEY    = {{ host_key_param | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
+{% endblock %}
